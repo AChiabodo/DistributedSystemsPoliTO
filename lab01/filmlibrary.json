@@ -1,0 +1,85 @@
+{
+    "$schema":"./filmschema.json",
+    "films":
+    [
+    {
+      "id": "film001",
+      "title": "Inception",
+      "owner": "user123",
+      "private": true,
+      "watchDate": "2023-10-15",
+      "rating": 9,
+      "favorite": true
+    },
+    {
+      "id": "film002",
+      "title": "The Shawshank Redemption",
+      "owner": "user456",
+      "private": true,
+      "watchDate": "2023-09-20",
+      "rating": 10,
+      "favorite": true
+    },
+    {
+      "id": "film003",
+      "title": "Pulp Fiction",
+      "owner": "user789",
+      "private": true,
+      "watchDate": "2023-08-05",
+      "rating": 8,
+      "favorite": false
+    },
+    {
+      "id": "film004",
+      "title": "The Godfather",
+      "owner": "user123",
+      "private": false
+    },
+    {
+      "id": "film005",
+      "title": "Avatar",
+      "owner": "user456",
+      "private": false
+    }
+  ],
+
+  "reviews": [
+    {
+      "filmId": "film001",
+      "reviewerId": "user123",
+      "completed": true,
+      "reviewDate": "2023-10-25",
+      "rating": 8,
+      "review": "Inception is a mind-bending movie with incredible visuals and a complex plot. I thoroughly enjoyed it."
+    },
+    {
+      "filmId": "film002",
+      "reviewerId": "user456",
+      "completed": true,
+      "reviewDate": "2023-10-26",
+      "rating": 10,
+      "review": "The Shawshank Redemption is a masterpiece. The storytelling and character development are exceptional."
+    },
+    {
+      "filmId": "film003",
+      "reviewerId": "user789",
+      "completed": true,
+      "reviewDate": "2023-10-27",
+      "rating": 7,
+      "review": "Pulp Fiction is a bit too chaotic for my taste, but the dialogue and characters are memorable."
+    },
+    {
+      "filmId": "film004",
+      "reviewerId": "user123",
+      "completed": false,
+      "rating": 0
+    },
+    {
+      "filmId": "film005",
+      "reviewerId": "user456",
+      "completed": false
+    }
+  ]
+
+  }
+  

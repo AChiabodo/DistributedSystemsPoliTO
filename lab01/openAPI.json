@@ -1,0 +1,190 @@
+{
+    "openapi":"3.0.2",
+    "info": {
+      "title":"Film Library API",
+      "version":"1.0"
+    },
+    "paths": {
+        "/film" : {
+            "get": {
+                "summary": "Get all public films",
+                "description": "Get all public films",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post" : {
+                "summary": "Add a new film",
+                "description": "Add a new film",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/film"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+            
+            },
+        "/film/{filmId}" : {
+            "get" : {
+                "summary": "Get a film by id",
+                "description": "Get a film by id",
+                "parameters": [
+                    {
+                        "name": "filmId",
+                        "in": "path",
+                        "description": "The id of the film to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+            },
+        "/film/{filmId}/reviews" : {
+            "get" : {
+                "summary": "Get all reviews for a film",
+                "description": "Get all reviews for a film",
+                "parameters": [
+                    {
+                        "name": "filmId",
+                        "in": "path",
+                        "description": "The id of the film to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/review"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "components": { 
+        "schemas" : 
+    {
+            "user" : {
+                "type": "object",
+                "properties": {
+                        "id" : {"type":"string"},
+                        "name": {"type":"string"},
+                        "email" : {"$ref": "#/components/schemas/email"},
+                        "password": {"$ref":"#/components/schemas/password"}
+                },
+                "required": ["name","email","password"]
+              },
+            "film" : {
+                "type": "object",
+                "properties": {
+                    "id" : {"type":"string"},
+                    "title": {"type":"string"},
+                    "owner": {"$ref": "#definitions/user"},
+                    "private": {"type":"boolean"},
+                    "watchDate": {"$ref":"#definitions/date"},
+                    "description": {"type":"string"},
+                    "rating": {"type":"number" , "maximum": 10 , "minimum": 0},
+                    "favorite": {"type":"boolean", "default": false}
+                    },
+                    "required": ["title","owner","private","description"]
+            },
+            "review" : {
+                "type": "object",
+                "properties": {
+                    "reviewer": {"$ref": "#definitions/user"},
+                    "filmId": {"$ref": "#definitions/film"},
+                    "rating": {"type":"number" , "maximum": 10 , "minimum": 0},
+                    "review": {"type":"string"},
+                    "completed" : {"type":"boolean", "default": false},
+                    "reviewDate": {"$ref":"#definitions/date"}
+                    },
+                    "required": ["reviewer","filmId"]
+            },
+            "date" : {
+                "type": "string",
+                "pattern": "^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$"
+            },
+            "email": {
+                "type":"string", "pattern": "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+              },
+            "password": {
+                "type":"string", "pattern": "^.{6,20}$"
+              }
+    }
+}
+}

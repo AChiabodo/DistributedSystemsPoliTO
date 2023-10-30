@@ -1,0 +1,101 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://dsp.polito.it/biblioschema_v2.json",
+
+    "definitions": {
+        "user" : {
+            "$id": "#definitions/user",
+            "type": "object",
+            "allOf": [
+                {"$ref": "#definitions/user"},
+                {
+                    "properties": {
+                    "id" : {"type":"string"},
+                    "name": {"type":"string"},
+                    "email" : {"$ref": "#definitions/email"},
+                    "password": {"#ref":"#definitions/password"}
+                    },
+                    "required": ["username","password"]
+                }
+            ]
+          },
+        "film" : {
+            "$id": "#definitions/film",
+            "type": "object",
+            "allOf": [
+                {"$ref": "#definitions/film"},
+                {
+                    "properties": {
+                    "id" : {"type":"string"},
+                    "title": {"type":"string"},
+                    "owner": {"$ref": "#definitions/user"},
+                    "private": {"type":"boolean"},
+                    "watchDate": {"$ref":"#definitions/date"},
+                    "actors": {"type":"array", "items": {"type":"string"}},
+                    "description": {"type":"string"},
+                    "rating": {"type":"number" , "maximum": 10 , "minimum": 0},
+                    "favorite": {"type":"boolean", "default": false}
+                    },
+                    "required": ["title","year","director","genre","actors","description","rating","reviews"],
+                    "dependencies": {
+                        "watchDate": {"properties": {"private": {"const": true}}},
+                        "rating" : {"properties": {"private": {"const": true}}},
+                        "favorite" : {"properties": {"private": {"const": true}}}
+                    }
+                }
+            ]
+        },
+        "review" : {
+            "$id": "#definitions/review",
+            "type": "object",
+            "allOf": [
+                {"$ref": "#definitions/review"},
+                {
+                    "properties": {
+                    "reviewer": {"$ref": "#definitions/user"},
+                    "filmId": {"$ref": "#definitions/film"},
+                    "rating": {"type":"number" , "maximum": 10 , "minimum": 0},
+                    "review": {"type":"string"},
+                    "completed" : {"type":"boolean", "default": false},
+                    "reviewDate": {"$ref":"#definitions/date"}
+                    },
+                    "required": ["reviewer","filmId"],
+                    "dependencies": {
+                        "reviewDate": {"properties": {"completed": {"const": true}}},
+                        "rating" : {"properties": {"completed": {"const": true}}},
+                        "review" : {"properties": {"completed": {"const": true}}}
+                    }
+                }
+            ]
+        },
+        "date" : {
+            "$id": "#definitions/date",
+            "type": "string",
+            "pattern": "^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$"
+        },
+        "email": {
+            "$id": "#definitions/email",
+            "type":"string", "pattern": "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+          },
+        "password": {
+            "$id": "#definitions/password",
+            "type":"string", "pattern": "^.{6,20}$"
+          }
+        
+    },
+    "type": "object",
+    "properties": {
+        "users": {
+            "type": "array",
+            "items": {"$ref": "#definitions/user"}
+        },
+        "films": {
+            "type": "array",
+            "items": {"$ref": "#definitions/film"}
+        },
+        "reviews": {
+            "type": "array",
+            "items": {"$ref": "#definitions/review"}
+        }
+    }
+}
