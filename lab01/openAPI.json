@@ -5,33 +5,39 @@
       "version":"1.0"
     },
     "paths": {
-        "/film" : {
-            "get": {
-                "summary": "Get all public films",
-                "description": "Get all public films",
+        "/api" : {
+            "get" : {
+                "summary": "Get all endpoints",
+                "description": "Get all endpoints",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/film"
+                                    "type" : "array",
+                                    "items" : {
+                                        "$ref" : "#/components/schemas/endpoint"
+                                    }
                                 }
                             }
                         }
                     },
-                    "404": {
-                        "description": "Not Found"
-                    }
-                    ,
                     "500": {
                         "description": "Internal Server Error"
                     }
                 }
-            },
+            }
+        },
+        "/api/films" : {
             "post" : {
                 "summary": "Add a new film",
                 "description": "Add a new film",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -56,17 +62,51 @@
                     "400": {
                         "description": "Bad Request"
                     },
+                    "401" :{
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "get" : {
+                "summary": "Get all films (publics + privates)",
+                "description": "Get all films (publics + privates)",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description": "Unauthorized"
+                    },
                     "500": {
                         "description": "Internal Server Error"
                     }
                 }
             }
-            
-            },
-        "/film/{filmId}" : {
+        },
+        "/api/films/{filmId}" : {
             "get" : {
                 "summary": "Get a film by id",
                 "description": "Get a film by id",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "filmId",
@@ -97,9 +137,96 @@
                         "description": "Internal Server Error"
                     }
                 }
-            }
             },
-        "/film/{filmId}/reviews" : {
+            "delete" : {
+                "summary": "Delete a film by id",
+                "description": "Delete a film by id",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "filmId",
+                        "in": "path",
+                        "description": "The id of the film to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401" : {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put" : {
+                "summary": "Update a film by id",
+                "description": "Update a film by id",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "filmId",
+                        "in": "path",
+                        "description": "The id of the film to update",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/film"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/films/public/{filmId}/reviews" : {
             "get" : {
                 "summary": "Get all reviews for a film",
                 "description": "Get all reviews for a film",
@@ -134,11 +261,399 @@
                     }
                 }
             }
+        },
+        "/api/films/public" : {
+            "get" : {
+                "summary": "Get all public films",
+                "description": "Get all public films",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/films/public/{id}" : {
+        "get" : {
+            "summary": "Get a public film by id",
+            "description": "Get a public film by id",
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "The id of the film to retrieve",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/film"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Not Found"
+                }
+                ,
+                "500": {
+                    "description": "Internal Server Error"
+                }
+            }
+        }
+        },
+        "/api/users" : {
+            "get" : {
+                "summary": "Get all users",
+                "description": "Get all users",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            
+            }
+        },
+        "/api/users/{usersId}/films" : {
+            "get" : {
+                "summary": "Get all films for a user",
+                "description": "Get all films for a user",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "usersId",
+                        "in": "path",
+                        "description": "The id of the user to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }                
+            }
+        },
+        "/api/auth" : {
+            "post" : {
+                "summary": "Login",
+                "description": "Login",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/auth"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401" : {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "get" : {
+                "summary" : "get current session",
+                "description" : "get current session",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "$ref" : "#/components/schemas/auth"
+                                }
+                            }
+                        }
+                    },
+                    "401" : {
+                        "description" : "Unauthorized"
+                    },
+                    "500" : {
+                        "description" : "Internal Server Error"
+                    }
+                }
+            },
+            "delete" : {
+                "summary" : "logout",
+                "description" : "logout",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses" : {
+                    "200" : {
+                        "description" : "OK"
+                    },
+                    "401" : {
+                        "description" : "Unauthorized"
+                    },
+                    "500" : {
+                        "description" : "Internal Server Error"
+                    }
+                }
+            
+            }
+        },
+        "/api/reviews" : {
+            "post" : {
+                "summary": "Assign a new review to a user",
+                "description": "Assign a new review to a user",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/review"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/review"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401" :{
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/reviews/{reviewId}" : {
+            "put" : {
+                "summary": "Update a review by id",
+                "description": "Update a review by id",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "reviewId",
+                        "in": "path",
+                        "description": "The id of the review to update",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/review"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/review"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete" : {
+                "summary": "Delete a review by id",
+                "description": "Delete a review by id",
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "reviewId",
+                        "in": "path",
+                        "description": "The id of the review to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401" : {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "get" : {
+                "summary": "Get a review by id",
+                "description": "Get a review by id",
+                "parameters": [
+                    {
+                        "name": "reviewId",
+                        "in": "path",
+                        "description": "The id of the review to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401" : {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                    ,
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            
+            }
         }
     },
     "components": { 
-        "schemas" : 
-    {
+        "schemas" : {   
+            "endpoint" : {
+                "type": "object",
+                "properties": {
+                    "path" : {"type":"string"},
+                    "methods": {"type":"array","items":{"type":"string"}}
+                }
+            },
             "user" : {
                 "type": "object",
                 "properties": {
@@ -154,9 +669,9 @@
                 "properties": {
                     "id" : {"type":"string"},
                     "title": {"type":"string"},
-                    "owner": {"$ref": "#definitions/user"},
+                    "owner": {"$ref": "#/components/schemas/user"},
                     "private": {"type":"boolean"},
-                    "watchDate": {"$ref":"#definitions/date"},
+                    "watchDate": {"$ref":"#/components/schemas/date"},
                     "description": {"type":"string"},
                     "rating": {"type":"number" , "maximum": 10 , "minimum": 0},
                     "favorite": {"type":"boolean", "default": false}
@@ -166,14 +681,22 @@
             "review" : {
                 "type": "object",
                 "properties": {
-                    "reviewer": {"$ref": "#definitions/user"},
-                    "filmId": {"$ref": "#definitions/film"},
+                    "id" : {"type":"string"},
+                    "reviewer": {"$ref": "#/components/schemas/user"},
+                    "filmId": {"$ref": "#/components/schemas/film"},
                     "rating": {"type":"number" , "maximum": 10 , "minimum": 0},
                     "review": {"type":"string"},
                     "completed" : {"type":"boolean", "default": false},
-                    "reviewDate": {"$ref":"#definitions/date"}
+                    "reviewDate": {"$ref":"#/components/schemas/date"}
                     },
-                    "required": ["reviewer","filmId"]
+                    "required": ["id","reviewer","filmId","completed"]
+            },
+            "auth" : {
+                "type": "object",
+                "properties": {
+                    "user" : {"$ref": "#/components/schemas/user"},
+                    "token": {"type":"string"}
+                }
             },
             "date" : {
                 "type": "string",
@@ -185,6 +708,13 @@
             "password": {
                 "type":"string", "pattern": "^.{6,20}$"
               }
+    },
+    "securitySchemes": {
+        "cookieAuth": {
+            "type": "apiKey",
+            "in": "cookie",
+            "name": "session"
+        }
     }
 }
 }

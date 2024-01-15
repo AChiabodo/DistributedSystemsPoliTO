@@ -1,0 +1,57 @@
+GET http://localhost:3021/api/films HTTP/1.1
+###
+GET http://localhost:3021/api/films/1 HTTP/1.1
+###
+GET http://localhost:3021/api/users HTTP/1.1
+###
+GET http://localhost:3021/api/users/1 HTTP/1.1
+###
+POST http://localhost:3021/api/films HTTP/1.1
+Content-Type: application/json
+
+{
+    "title" : "The Lord of the Rings",
+    "favorite" : true,
+    "watchdate" : "2022-12-31",
+    "user" : 1
+}
+
+###
+PUT http://localhost:3021/api/films/14 HTTP/1.1
+Content-Type: application/json
+
+{
+    "id" : 14,
+    "title" : "The Lord of the Rings",
+    "favorite" : true,
+    "watchdate" : "2023-05-10",
+    "rating" : 5,
+    "user" : 1
+}
+
+###
+DELETE  http://localhost:3021/api/films/14 HTTP/1.1
+###
+GET http://localhost:3021/api/films?filter=unseen HTTP/1.1
+###
+GET http://localhost:3021/api/films?filter=lastmonth HTTP/1.1
+###
+GET http://localhost:3021/api/films?filter=favorites HTTP/1.1
+###
+GET http://localhost:3021/api/films?filter=bestrated HTTP/1.1
+###
+GET http://localhost:3021/api/films?filter=all HTTP/1.1
+###
+PUT http://localhost:3021/api/films/10/rating HTTP/1.1
+Content-Type: application/json
+
+{
+    "rating" : 1
+}
+###
+PUT http://localhost:3021/api/films/10/favorite HTTP/1.1
+Content-Type: application/json
+
+{
+    "favorite" : false
+}
