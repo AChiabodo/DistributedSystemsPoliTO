@@ -667,6 +667,10 @@
             "film" : {
                 "type": "object",
                 "properties": {
+                    "$schema": {
+                        "type": "string",
+                        "description": "path to the JSON Schema to use for the validation of the JSON data structure describing the film"
+                      },
                     "id" : {"type":"string"},
                     "title": {"type":"string"},
                     "owner": {"$ref": "#/components/schemas/user"},
@@ -676,7 +680,7 @@
                     "rating": {"type":"number" , "maximum": 10 , "minimum": 0},
                     "favorite": {"type":"boolean", "default": false}
                     },
-                    "required": ["title","owner","private","description"]
+                    "required": ["title","owner","private"]
             },
             "review" : {
                 "type": "object",

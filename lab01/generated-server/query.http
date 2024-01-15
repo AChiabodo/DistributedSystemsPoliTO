@@ -3,4 +3,14 @@ GET http://localhost:8080/api/films/public HTTP/1.1
 GET http://localhost:8080/api/films/public/2 HTTP/1.1
 ###
 GET http://localhost:8080/api/films/public/2/reviews HTTP/1.1
+###/api/films/public/reviews/:filmId
+GET http://localhost:8080/api/films HTTP/1.1
 ###
+POST http://localhost:8080/api/auth HTTP/1.1
+
+{
+    "id" : 0,
+    "name" : "User",
+    "email" : "user.dsp@polito.it",
+    "password" : "password",
+}

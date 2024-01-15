@@ -4,6 +4,7 @@ const path = require('path');
 const http = require('http');
 const LocalStrategy = require('passport-local').Strategy; // username and password for login
 const session = require('express-session'); // enable sessions
+var cors = require('cors');
 
 /*** Set up Passport ***/
 // set up the "username and password" login strategy
@@ -32,15 +33,40 @@ const options = {
 const expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
 const app = expressAppConfig.getApp();
 
-// custom middleware: check if a given request is coming from an authenticated user
-const isLoggedIn = (req, res, next) => {
-  //  console.log(req.isAuthenticated())
-    if(req.isAuthenticated())
-      return next();
-    
-    return res.status(401).json({ error: 'Not authenticated'});
-  }
 
+
+/** Set up and enable Cross-Origin Resource Sharing (CORS) **/
+
+
+var corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+
+
+/*** Passport ***/
+
+passport.serializeUser(function (user, cb) { 
+  cb(null, user);
+});
+
+passport.deserializeUser(function (user, cb) { 
+  return cb(null, user); 
+});
+
+
+/*** Defining authentication verification middleware ***/
+
+const isLoggedIn = (req, res, next) => {
+if(req.isAuthenticated()) {
+      return next();
+  }
+  return res.status(401).json({error: 'Not authorized'});
+}
+
+// Creating the session
+
+app.use(cors(corsOptions));
 // set up the session
 app.use(session({
   // by default, Passport uses a MemoryStore to keep track of the sessions
@@ -48,18 +74,21 @@ app.use(session({
   resave: false,
   saveUninitialized: false 
 }));
+app.use(passport.authenticate('session'));
 
-// then, init passport
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 const filmController = require(path.join(__dirname, './controllers/filmController.js'));
+const authController = require(path.join(__dirname, './controllers/authController.js'));
 
 app.get('/api/films/public', filmController.apiFilmsPublicGET);
 app.get('/api/films/public/:filmId', filmController.apiFilmsPublicIdGET);
 app.get('/api/films/public/:filmId/reviews', filmController.apiFilmsPublicFilmIdReviewsGET);
 app.get('/api/films', isLoggedIn, filmController.apiFilmsGET);
-
+app.delete('/api/films/:filmId', isLoggedIn, filmController.apiFilmsFilmIdDELETE);
+app.get('/api/films/:filmId', isLoggedIn, filmController.apiFilmsFilmIdGET);
+app.post('/api/films', isLoggedIn,  filmController.apiFilmsPOST);
+app.post('/api/auth', authController.authenticateUser);
 // Initialize the Swagger middleware
 http.createServer(app).listen(serverPort, function () {
     console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
